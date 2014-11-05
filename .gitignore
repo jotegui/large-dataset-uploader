@@ -1,0 +1,11 @@
+# Virtualenv
+env/
+
+# Libraries
+lib/
+
+# Credentials
+cred.py
+
+# Compiled source
+*.pyc
