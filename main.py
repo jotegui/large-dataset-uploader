@@ -13,7 +13,7 @@ from Grouper import Grouper
 
 
 class PointProcessor():
-    """."""
+    """Upload a slim version of the table in RedShift to CartoDB."""
     
     
     def __init__(self):
@@ -120,7 +120,8 @@ class PointProcessor():
                                        port=cdb_port,
                                        dbname=cdb_dbname,
                                        user=cdb_user,
-                                       password=cdb_password)
+                                       password=cdb_password,
+                                       options='-c statement_timeout=0')
         
         self.rs_cur = self.rs_conn.cursor()
         self.cdb_cur = self.cdb_conn.cursor()
@@ -171,6 +172,24 @@ class PointProcessor():
         # Download slices
         call(['s3cmd', 'get', '--recursive', self.names['bucket_uri'], folder_string])
         
+        # Check with user if files were downloaded
+        print "============================"
+        print "WARNING: User input required"
+        print "============================"   
+        print ""
+        print "Here is the list of files that were downloaded. Please, check if the download finished properly."
+
+        call(['ls', '-lah', folder_string])
+        cont = False
+        while cont is False:
+            resp = raw_input("Did all the files make it to the local system? (Y/n) ")
+            if resp.lower().startswith('y') or resp == "":
+                cont = True
+            elif resp.lower().startswith('n'):
+                call(['rm', '-R', folder_string])
+                self.download_slices()
+                cont = True
+            
         return
     
     
@@ -254,8 +273,9 @@ class PointProcessor():
         slices = os.listdir('./{0}'.format(self.names['slices_folder']))
         for slice in slices:
             print "Loading slice {0}".format(slice)
-            self.cdb_cur.execute("\copy {0} from './{1}' with (NULL '');".format(self.names['master_table'], self.names['slices_folder']))
-        
+            with open('./{0}/{1}'.format(self.names['slices_folder'], slice)) as inp:
+                self.cdb_cur.copy_from(inp, self.names['master_table'], null='', columns=self.names['fields'])
+                self.cdb_conn.commit()
         return
 
 
