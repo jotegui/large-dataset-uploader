@@ -30,5 +30,9 @@ slices_folder = "slim"
 # Name of the field that contains the scientific name in Redshift
 sciname_field = "scientific_name"
 
+# Names of the coordinate fields
+latitude_field = "latitude"
+longitude_field = "longitude"
+
 # Maximum number of rows in each partition table
 threshold = 10000000

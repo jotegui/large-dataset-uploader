@@ -73,6 +73,9 @@ class PointProcessor():
         # 4. Upload slices
         self.upload()
         
+        # 5. Update the geom fields
+        self.geoms()
+        
         return
     
     
@@ -283,6 +286,32 @@ class PointProcessor():
                 self.cdb_cur.copy_from(inp, self.names['master_table'], null='', columns=self.names['fields'])
                 self.cdb_conn.commit()
         return
+    
+    
+    def geoms(self):
+    """Update the_geom and the_geom_webmercator fields."""
+    
+        # Calculate count of partition tables
+        self.cdb_cur.execute("select relname from pg_class where relkind='r' and relname like '{0}_%'".format(self.names['master_table']))
+        cnt = len([x[0] for x in self.cdb_cur.fetchall()])
+        print "{0} partitions to update".format(cnt)
+
+        # Table names
+        partitions = list(range(cnt))
+        table_prefix = self.names['master_table']
+        master_table = "{0}".format(table_prefix)
+        partition_tables = []
+        for i in partitions:
+            partition = "{0}_{1}".format(self.names['master_table'], i)
+            partition_tables.append(partition)
+            
+        # Update the geom fields
+        for partition in partition_tables:
+            print "Updating partition {0}".format(partition)
+            q = "update {0} set the_geom=ST_SetSRID(ST_Point(jot_cast_string_float({1}), jot_cast_string_float({2})),4326), the_geom_webmercator=ST_Transform(ST_SetSRID(ST_Point(jot_cast_string_float({1}), jot_cast_string_float({2})),4326), 3857) where jot_cast_string_float({1}) is not null and jot_cast_string_float({2}) is not null and {2}>-90 and {2}<90 and {1}>-180 and {1}<180;".format(partition, longitude_field, latitude_field)
+            self.cdb_cur.execute(q)
+            self.cdb_conn.commit()
+            print "done"
 
 
 if __name__ == "__main__":
