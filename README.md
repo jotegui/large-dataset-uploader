@@ -99,7 +99,11 @@ A different script, `Grouper.py` is called to calculate and create the partition
 
 #### Task 4: Upload the slices to the partitioned tables
 
-Finally, after `Grouper.py` has finished, each slice is uploaded to the master table and each record is redirected to the proper sub-table.
+After `Grouper.py` has finished, each slice is uploaded to the master table and each record is redirected to the proper sub-table.
+
+#### Task 5: Update the content of the_geom and the_geom_webmercator fields
+
+Finally, after all partitions have been uploaded, the_geom and the_geom_webmercator fields are updated. The function goes through all partitions converting the values in the coordinate fields into PostGIS point entities. This step may take a long time to complete, depending on the final volume of the tables.
 
 #### Extra info: `Grouper.py` and the partitioned tables
 
