@@ -23,8 +23,16 @@ class Grouper():
         self.trigger_conditions = ''
         
         # Credentials taken from cred.py
-        self.rs_conn=psycopg2.connect(host=rs_host, port=rs_port, dbname=rs_dbname, user=rs_user, password=rs_password)
-        self.cdb_conn=psycopg2.connect(host=cdb_host, port=cdb_port, dbname=cdb_dbname, user=cdb_user, password=cdb_password)
+        self.rs_conn=psycopg2.connect(host=rs_host,
+                                      port=rs_port,
+                                      dbname=rs_dbname,
+                                      user=rs_user,
+                                      password=rs_password)
+        self.cdb_conn=psycopg2.connect(host=cdb_host,
+                                       port=cdb_port,
+                                       dbname=cdb_dbname,
+                                       user=cdb_user,
+                                       password=cdb_password)
         
         self.rs_cur = self.rs_conn.cursor()
         self.cdb_cur = self.cdb_conn.cursor()
@@ -46,7 +54,7 @@ class Grouper():
         
         
     def loop(self):
-        """."""
+        """Define and store a group."""
         print "-------------------------------------"
         print "round {0}".format(self.l)
         self.get_counts()
@@ -61,7 +69,7 @@ class Grouper():
     
     
     def get_counts(self):
-        """."""
+        """Get counts of grouped records, sorted."""
         
         if self.limits is not None:
             limit_string = "where {0} like '".format(self.sciname_field)
@@ -76,7 +84,7 @@ class Grouper():
     
     
     def group(self):
-        """."""
+        """Build the list of elements in the group."""
         ids = []
         cont = 0
         self.limits = []
@@ -117,7 +125,7 @@ class Grouper():
     
     
     def partition_tables(self):
-        """."""
+        """Fill templates and execute table creation and trigger generation queries."""
         prefix = 0
         for group in self.groups:
             

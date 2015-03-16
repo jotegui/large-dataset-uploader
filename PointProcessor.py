@@ -82,7 +82,7 @@ class PointProcessor():
     
     
     def build_names(self):
-        """Build all variable names based on info on settings."""
+        """Build all variable names based on settings."""
         
         # Build empty dictionary to store names
         names = {}
@@ -104,6 +104,7 @@ class PointProcessor():
         
         # Store names dictionary in instance attribute
         self.names = names
+        
         return
     
     
@@ -148,7 +149,12 @@ class PointProcessor():
         template = open('./unload.sql').read()
         fields_string = ', '.join(self.names['fields'])
         
-        self.unload = template.format(fields_string, self.names['redshift_table'], self.names['bucket_uri'], aws_access_key_id, aws_secret_access_key, sciname_field)
+        self.unload = template.format(fields_string, 
+                                      self.names['redshift_table'],
+                                      self.names['bucket_uri'],
+                                      aws_access_key_id,
+                                      aws_secret_access_key,
+                                      sciname_field)
         
         return
     

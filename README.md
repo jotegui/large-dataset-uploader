@@ -153,4 +153,6 @@ Also, the program needs a file called `cred.py` with the credentials for CartoDB
 Installation
 ------------
 
-The program is already located in a folder in Litoria, and it has everything it needs to work.
+The program is already located in a folder in Litoria, and it has everything it needs to work. It can be located in the following folder
+
+	/home/javiero/GBIFUploader/large-dataset-uploader
