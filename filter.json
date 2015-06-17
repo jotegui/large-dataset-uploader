@@ -1,0 +1,15 @@
+{
+  "creator":"jot",
+  "notification_address": ["javier.otegui@gmail.com"],
+  "predicate":
+  {
+    "type":"not",
+        "predicate":
+        {
+          "type":"equals",
+          "key":"DATASET_KEY",
+          "value":"4fa7b334-ce0d-4e88-aaae-2e0c138d049e"
+        }
+  }
+}
+

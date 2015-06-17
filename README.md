@@ -5,6 +5,8 @@ Code for the ingestion of large datasets (GBIF and eBird) into Map Of Life's Car
 
 Author: Javier Otegui (javier.otegui@gmail.com)
 
+[toc]
+
 What it does
 ------------
 
